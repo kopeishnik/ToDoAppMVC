@@ -1,0 +1,35 @@
+﻿@model ToDoMVC.Models.SettingsDataModel
+
+@{
+    ViewData["Title"] = "Settings";
+}
+
+<h1>Settings</h1>
+
+<h4>SettingsDataModel</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Settings">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="TodosPageSize" class="control-label"></label>
+                <input asp-for="TodosPageSize" class="form-control" value="@Model.TodosPageSize" min="5" max="100" />
+                <span asp-validation-for="TodosPageSize" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="CategoriesPageSize" class="control-label"></label>
+                <input asp-for="CategoriesPageSize" class="form-control" value="@Model.CategoriesPageSize" min="5" max="100" />
+                <span asp-validation-for="CategoriesPageSize" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index" asp-controller="Todo">Back to List</a>
+</div>
+
