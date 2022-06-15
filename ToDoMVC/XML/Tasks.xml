@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Tasks>
+  <Task Id="1">
+    <Name>XmlTask1</Name>
+    <Deadline>15.06.2022 18:45:00</Deadline>
+    <IsDone>False</IsDone>
+    <CategoryId>1</CategoryId>
+  </Task>
+  <Task Id="2">
+    <Name>XmlTusk2</Name>
+    <Deadline></Deadline>
+    <IsDone>True</IsDone>
+    <CategoryId></CategoryId>
+  </Task>
+  <Task Id="3">
+    <Name>dcdc</Name>
+    <Deadline />
+    <IsDone>true</IsDone>
+    <CategoryId />
+  </Task>
+  <Task Id="4">
+    <Name>do labs 2</Name>
+    <Deadline />
+    <IsDone>false</IsDone>
+    <CategoryId />
+  </Task>
+</Tasks>

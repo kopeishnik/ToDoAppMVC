@@ -8,9 +8,8 @@
 }
 
 @{
-    SqlConnection sqlConnection = new(@"Data Source=localhost;Initial Catalog=AmogusDB;Integrated Security=True");
-    string query = "SELECT [Id], [Name] FROM [Categories] ORDER BY [Id] ASC";
-    var categories = sqlConnection.Query<ToDoMVC.Models.Category>(query);
+    var categories = ToDoMVC.Repositories.Repository.GetAllCategories();
+    //get upper sht from repo stupid me lol 
     var categoriesSelectListItems = new List<SelectListItem>();
     categoriesSelectListItems.Add(new SelectListItem("None", ""));
     foreach (var item in categories)

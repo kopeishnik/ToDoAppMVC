@@ -4,21 +4,20 @@ using Dapper;
 using System.Data.SqlClient;
 using ToDoMVC.Models.ViewModels;
 using ToDoMVC.Models;
+using ToDoMVC.Repositories;
 
 namespace ToDoMVC.Controllers
 {
     public class CategoriesController : Controller
     {
         public static int PageSize = 30;
-        private DataBase DataBase = new();
+        public IRepository repository = new Repository();
         // GET: CategoriesController
         public ActionResult Index(int id = 1)
         {
             if (id < 1) id = 1;
-            string query = "SELECT [Id], [Name] FROM [Categories] ORDER BY [Id] ASC OFFSET @offsetnumber ROWS FETCH NEXT @pagesize ROWS ONLY";
-            var categories = DataBase.GetConnection().Query<Category>(query, new { offsetnumber = PageSize * (id - 1), pagesize = PageSize });
-            var tasksCount = DataBase.GetConnection().QueryFirst<int>($"SELECT COUNT(*) FROM [Categories]");
-            PagingInfo pagingInfo = new(tasksCount, PageSize, id);
+            List<Category> categories = repository.GetPageOfCategories(id, PageSize);
+            PagingInfo pagingInfo = repository.GetCategoriesPagingInfo(id, PageSize);
             CategoriesListViewModel categoriesListViewModel = new(categories, pagingInfo);
             return View(categoriesListViewModel);
         }
@@ -26,8 +25,7 @@ namespace ToDoMVC.Controllers
         // GET: CategoriesController/Details/5
         public ActionResult Details(int id)
         {
-            string query = "SELECT [Id], [Name] FROM [Categories] WHERE [Id] = @id";
-            return View(DataBase.GetConnection().QuerySingle<Models.Category>(query, new { id }));
+            return View(repository.GetCategoryById(id));
         }
 
         // GET: CategoriesController/Create
@@ -43,21 +41,10 @@ namespace ToDoMVC.Controllers
         {
             try
             {
-                DataBase.OpenConnection();
-                //name
-                SqlCommand command = new("INSERT INTO [Categories]([Name]) VALUES(@tname)", DataBase.GetConnection());
-                command.Parameters.AddWithValue("@tname", Convert.ToString(collection["Name"]));
-                //gaycheck for input
-                if (command.ExecuteNonQuery() == 1)
-                {
-                    DataBase.CloseConnection();
+                if (repository.CreateCategory(collection) == 1)
                     return RedirectToAction(nameof(Index));
-                }
                 else
-                {
-                    DataBase.CloseConnection();
                     return View();
-                }
             }
             catch
             {
@@ -68,8 +55,7 @@ namespace ToDoMVC.Controllers
         // GET: CategoriesController/Edit/5
         public ActionResult Edit(int id)
         {
-            string query = "SELECT [Id], [Name] FROM [Categories] WHERE [Id] = @id";
-            return View(DataBase.GetConnection().QuerySingle<Models.Category>(query, new { id }));
+            return View(repository.GetCategoryById(id));
         }
 
         // POST: CategoriesController/Edit/5
@@ -79,39 +65,22 @@ namespace ToDoMVC.Controllers
         {
             try
             {
-                // update 
-
-                DataBase.OpenConnection();
-                //SqlCommand command = new("INSERT INTO [Tasks]([Name], [Deadline], [IsDone], [CategoryId]) VALUES(@tname, @deadline, @isdone, @categoryid)", DataBase.GetConnection());
-
-                SqlCommand command = new("UPDATE [Categories] SET [Name] = @tname WHERE [Id] = @id", DataBase.GetConnection());
-                //name
-                command.Parameters.AddWithValue("@tname", Convert.ToString(collection["Name"]));
-                //id
-                command.Parameters.AddWithValue("@id", id);
                 //check
-                if (command.ExecuteNonQuery() == 1)
-                {
-                    DataBase.CloseConnection();
+                if (repository.UpdateCategory(id, collection) == 1)
                     return RedirectToAction(nameof(Index));
-                }
                 else
-                {
-                    DataBase.CloseConnection();
-                    return View(DataBase.GetConnection().QuerySingle<Models.Category>("SELECT [Id], [Name] FROM [Categories] WHERE [Id] = @id", new { id }));
-                }
+                    return View(repository.GetCategoryById(id));
             }
             catch
             {
-                return View(DataBase.GetConnection().QuerySingle<Models.Category>("SELECT [Id], [Name] FROM [Categories] WHERE [Id] = @id", new { id }));
+                return View(repository.GetCategoryById(id));
             }
         }
 
         // GET: CategoriesController/Delete/5
         public ActionResult Delete(int id)
         {
-            string query = "SELECT [Id], [Name] FROM [Categories] WHERE [Id] = @id";
-            return View(DataBase.GetConnection().QuerySingle<Models.Category>(query, new { id }));
+            return View(repository.GetCategoryById(id));
         }
 
         // POST: CategoriesController/Delete/5
@@ -121,25 +90,14 @@ namespace ToDoMVC.Controllers
         {
             try
             {
-                DataBase.OpenConnection();
-
-                SqlCommand command = new("DELETE [Categories] WHERE [Id] = @id", DataBase.GetConnection());
-                command.Parameters.AddWithValue("@id", id.ToString());
-
-                if (command.ExecuteNonQuery() == 1)
-                {
-                    DataBase.CloseConnection();
+                if (repository.DeleteCategory(id, collection) == 1)
                     return RedirectToAction(nameof(Index));
-                }
                 else
-                {
-                    DataBase.CloseConnection();
-                    return View();
-                }
+                    return View(repository.GetCategoryById(id));
             }
             catch
             {
-                return View(nameof(Index));
+                return View(repository.GetCategoryById(id));
             }
         }
     }

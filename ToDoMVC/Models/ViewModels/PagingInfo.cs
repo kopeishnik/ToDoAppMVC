@@ -3,7 +3,7 @@ namespace ToDoMVC.Models.ViewModels
 {
     public class PagingInfo
     {
-        public PagingInfo(int totalItems, int itemsPerPage, int currentPage)
+        public PagingInfo(int currentPage, int itemsPerPage, int totalItems)
         {
             TotalItems = totalItems;
             ItemsPerPage = itemsPerPage;

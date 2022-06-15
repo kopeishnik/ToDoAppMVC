@@ -6,6 +6,13 @@
 
 <h1>Settings</h1>
 
+@{
+    var storagetypeselectlist = new List<SelectListItem>();
+    storagetypeselectlist.Add(new SelectListItem("Sql", "Sql"));
+    if (Model.StorageType == "Sql") storagetypeselectlist.Add(new SelectListItem("Xml", "Xml"));
+    else storagetypeselectlist.Insert(0, new SelectListItem("Xml", "Xml"));
+}
+
 <h4>SettingsDataModel</h4>
 <hr />
 <div class="row">
@@ -21,6 +28,11 @@
                 <label asp-for="CategoriesPageSize" class="control-label"></label>
                 <input asp-for="CategoriesPageSize" class="form-control" value="@Model.CategoriesPageSize" min="5" max="100" />
                 <span asp-validation-for="CategoriesPageSize" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="StorageType" class="control-label"></label>
+                <select asp-for="StorageType" class="form-control" asp-items="@storagetypeselectlist"> </select>
+                <span asp-validation-for="StorageType" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />

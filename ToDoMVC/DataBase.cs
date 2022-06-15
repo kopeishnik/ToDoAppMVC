@@ -4,7 +4,10 @@ namespace ToDoMVC
 {
     public class DataBase
     {
-        SqlConnection sqlConnection = new(@"Data Source=localhost;Initial Catalog=AmogusDB;Integrated Security=True");
+        private static string sqlConnectionString = @"Data Source=localhost;Initial Catalog=AmogusDB;Integrated Security=True";
+        public static string SqlConnectionString => sqlConnectionString;
+
+        readonly SqlConnection sqlConnection = new(SqlConnectionString);
 
         public void OpenConnection()
         {
